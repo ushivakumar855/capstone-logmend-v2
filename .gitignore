@@ -12,3 +12,8 @@ __pycache__/
 .idea/
 Thumbs.db
 .DS_Store
+
+# Datasets (large; keep local, see data/README.md)
+data/raw/
+data/cleaned/
+results/

@@ -20,14 +20,14 @@ This repository contains a LogMend implementation related to the LogRESP-Agent r
 3. The selected tool returns evidence, which is added to the investigation history.
 4. The planner repeats until a stop condition is reached; LogMend then calculates severity and generates a report.
 
-The scorer expects trained artifacts under `models/saved_models/`. Neo4j must contain the relevant process data for graph-backed investigation. BETH batch evaluation temporarily loads the selected JSON data into Neo4j before running the agent.
+The scorer expects trained artifacts under `artifacts/saved_models/`. Neo4j must contain the relevant process data for graph-backed investigation. BETH batch evaluation temporarily loads the selected JSON data into Neo4j before running the agent.
 
 ## Requirements
 
 - Python 3.10 or newer.
 - Ollama running locally or at a configured URL, with the selected model available.
 - Neo4j with the BETH and/or DARPA provenance graph loaded for graph-backed investigations.
-- Compatible PyTorch and PyTorch Geometric installations, plus the model artifacts expected under `models/saved_models/`.
+- Compatible PyTorch and PyTorch Geometric installations, plus the model artifacts expected under `artifacts/saved_models/`.
 - Python packages used by the application include `requests`, `python-dotenv`, `neo4j`, `numpy`, `scikit-learn`, `joblib`, and `sentence-transformers`. Install PyTorch and PyTorch Geometric using versions compatible with your Python and hardware. This repository currently has no pinned dependency manifest.
 
 ## Configuration
@@ -54,46 +54,46 @@ The model value above is the code's default; change it if that model is not inst
 From the repository root, run the built-in BETH and DARPA example investigations:
 
 ```powershell
-python main.py
+python -m scripts.main
 ```
 
 Provide your own authorized BETH JSON data locally; datasets are not included in the upload. Run a limited evaluation with a JSON file:
 
 ```powershell
-python json_file_runner.py --file path/to/your/part_N.json --limit 10
+python -m scripts.json_file_runner --file data/cleaned/beth/test/part_N.json --limit 10
 ```
 
 Evaluate every JSON file in a directory:
 
 ```powershell
-python json_file_runner.py --dir path/to/your/beth_json_directory --limit 10
+python -m scripts.json_file_runner --dir data/cleaned/beth/test --limit 10
 ```
 
-Omit `--limit` to process all process groups in the selected input. These runs call Ollama and Neo4j and require the scorer's model artifacts; they are not offline-only commands. The runner writes a timestamped evaluation report in the working directory.
+Omit `--limit` to process all process groups in the selected input. These runs call Ollama and Neo4j and require the scorer's model artifacts; they are not offline-only commands. The runner writes a timestamped evaluation report in `results/`.
 
 ## Training
 
-`train_beth_models.py` and `train_darpa_models.py` train the corresponding scoring models from Neo4j graph data and save artifacts under `models/saved_models/`. Configure and populate the appropriate Neo4j database before running them:
+`train_beth_models.py` and `train_darpa_models.py` train the corresponding scoring models from Neo4j graph data and save artifacts under `artifacts/saved_models/`. Configure and populate the appropriate Neo4j database before running them:
 
 ```powershell
-python train_beth_models.py
-python train_darpa_models.py
+python -m scripts.train_beth_models
+python -m scripts.train_darpa_models
 ```
 
 ## Repository Layout
 
 | Path | Purpose |
 | --- | --- |
-| `main.py` | TAO investigation agent and report generation |
-| `agent/ollama_router.py` | Ollama chat API client |
-| `tools/` | Parsing, scoring, rules, context retrieval, TTP mapping, and threat lookup |
-| `database/neo4j_router.py` | Neo4j connections for BETH and DARPA data |
-| `models/architectures.py` | PyTorch Geometric model architectures |
-| `models/saved_models/` | Trained model weights and scalers |
-| `beth_test_data/` | BETH JSON event files for batch evaluation |
-| `train_*_models.py` | BETH and DARPA model training scripts |
-| `json_file_runner.py` | BETH JSON batch evaluation runner |
-| `evaluate_metrics.py` | Evaluation metric utilities |
+| `scripts/main.py` | TAO investigation agent and report generation |
+| `logmend/agent/ollama_router.py` | Ollama chat API client |
+| `logmend/tools/` | Parsing, scoring, rules, context retrieval, TTP mapping, and threat lookup |
+| `logmend/database/neo4j_router.py` | Neo4j connections for BETH and DARPA data |
+| `logmend/models/architectures.py` | PyTorch Geometric model architectures |
+| `artifacts/saved_models/` | Trained model weights and scalers |
+| `data/cleaned/beth/test/` | BETH JSON event files for batch evaluation |
+| `scripts/train_*_models.py` | BETH and DARPA model training scripts |
+| `scripts/json_file_runner.py` | BETH JSON batch evaluation runner |
+| `scripts/evaluate_metrics.py` | Evaluation metric utilities |
 
 ## Research Reference
 

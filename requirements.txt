@@ -1,0 +1,9 @@
+# Unpinned; install torch / torch_geometric separately for your Python + hardware.
+requests
+python-dotenv
+neo4j
+numpy
+scikit-learn
+joblib
+sentence-transformers
+fastavro
